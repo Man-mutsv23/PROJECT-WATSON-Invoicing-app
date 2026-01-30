@@ -1,0 +1,20 @@
+{
+    "invoices": [
+        {
+            "id": 1,
+            "client": "Tapiwa",
+            "amount": 200.0,
+            "description": "Solar installation",
+            "date": "2026-01-30",
+            "status": "Pending"
+        },
+        {
+            "id": 2,
+            "client": "AEW",
+            "amount": 400.0,
+            "description": "Graphics Designing",
+            "date": "2026-01-30",
+            "status": "Pending"
+        }
+    ]
+}
