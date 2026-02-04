@@ -58,49 +58,34 @@ with tab2:
     if not pending_invoices:
         st.write("No pending invoices to manage.")
     else:
-        # Table Header for clarity
+        # Header for the table
         h1, h2, h3, h4 = st.columns([2, 1, 1, 1])
-        h1.write("**Client & Balance**")
+        h1.write("**Client (Owed)**")
         h2.write("**Pay Amount**")
         h3.write("**Record**")
         h4.write("**Remove**")
         st.divider()
 
         for idx, inv in enumerate(pending_invoices):
-            # Calculate what is still owed (Balance)
-            # We use .get() just in case 'paid_amount' isn't in your old data yet
-            total_amt = inv['amount']
-            already_paid = inv.get('paid_amount', 0.0)
-            balance = total_amt - already_paid
+            # Calculate what's still due
+            balance = inv['amount'] - inv.get('paid_amount', 0.0)
             
             col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
-            
-            # Show the client and what they still owe
             col1.write(f"**{inv['client']}**")
-            col1.caption(f"Owed: ${balance:,.2f} / Total: ${total_amt:,.2f}")
+            col1.caption(f"Due: ${balance:,.2f} / Total: ${inv['amount']:,.2f}")
             
-            # 1. New Input for partial payment
-            pay_amt = col2.number_input(
-                "Amount", 
-                min_value=0.0, 
-                max_value=balance, 
-                step=10.0, 
-                key=f"pay_val_{inv['id']}",
-                label_visibility="collapsed"
-            )
+            # Partial payment input
+            pay_amt = col2.number_input("Amt", min_value=0.0, max_value=balance, key=f"pay_{inv['id']}")
             
-            # 2. Button to apply the partial payment
-            if col3.button("📩 Apply", key=f"apply_{inv['id']}"):
+            if col3.button("Apply", key=f"btn_{inv['id']}"):
                 if pay_amt > 0:
                     record_partial_payment(inv['id'], pay_amt)
-                    st.success(f"Recorded ${pay_amt} from {inv['client']}")
                     st.rerun()
-            
-            # 3. Your existing Delete logic
-            if col4.button("🗑️ Delete", key=f"del_pending_{inv['id']}"):
+
+            # Direct delete for mistakes
+            if col4.button("🗑️", key=f"del_{inv['id']}"):
                 delete_invoice(inv['id'])
                 st.rerun()
-
 # TAB 3: History (The new tab you requested)
 with tab3:
     st.subheader("Invoice History")

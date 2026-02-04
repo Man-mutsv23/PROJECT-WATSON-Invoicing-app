@@ -146,18 +146,18 @@ def record_partial_payment(invoice_id, payment_received):
 @tool()
 def record_partial_payment(invoice_id: int, payment_received: float) -> str:
     """
-    Records a partial payment for an invoice. If fully paid, status updates to 'Paid'.
+    Updates the paid amount for an invoice. If balance hits 0, status becomes 'Paid'.
     """
     data = _load_data()
     found = False
     
     for inv in data['invoices']:
         if inv['id'] == invoice_id:
-            # Initialize paid_amount if it doesn't exist yet
+            # Get existing paid amount or start at 0
             current_paid = inv.get('paid_amount', 0.0)
             inv['paid_amount'] = current_paid + payment_received
             
-            # If they paid it all off, flip the status
+            # If they've paid it all, mark as Paid
             if inv['paid_amount'] >= inv['amount']:
                 inv['status'] = 'Paid'
             
@@ -166,5 +166,5 @@ def record_partial_payment(invoice_id: int, payment_received: float) -> str:
             
     if found:
         _save_data(data)
-        return f"Recorded ${payment_received} for invoice #{invoice_id}."
-    return f"Error: Invoice #{invoice_id} not found."
+        return f"Recorded payment of ${payment_received}."
+    return "Invoice not found."

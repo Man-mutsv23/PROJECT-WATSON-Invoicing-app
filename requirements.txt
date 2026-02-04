@@ -1,0 +1,3 @@
+ibm-watsonx-orchestrate
+pandas
+streamlit
