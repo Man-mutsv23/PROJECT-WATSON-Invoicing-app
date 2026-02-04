@@ -1,4 +1,5 @@
 import json
+import sqlite3
 import os
 from datetime import datetime
 from ibm_watsonx_orchestrate.agent_builder.tools import tool
@@ -114,3 +115,56 @@ def remove_duplicate_invoices() -> str:
     
     removed_count = original_count - len(unique_invoices)
     return f"Cleanup complete! Removed {removed_count} duplicate entries."
+
+@tool()
+def record_partial_payment(invoice_id, payment_received):
+    conn = sqlite3.connect('finance.db')
+    cursor = conn.cursor()
+    
+    # 1. Get current data to check the balance
+    cursor.execute("SELECT amount, paid_amount FROM invoices WHERE id = ?", (invoice_id,))
+    row = cursor.fetchone()
+    
+    if row:
+        total_amt, current_paid = row
+        new_paid_total = current_paid + payment_received
+        
+        # 2. Update the amount paid
+        # If the new total meets or exceeds the original amount, mark as Paid
+        new_status = "Paid" if new_paid_total >= total_amt else "Pending"
+        
+        cursor.execute('''
+            UPDATE invoices 
+            SET paid_amount = ?, status = ? 
+            WHERE id = ?
+        ''', (new_paid_total, new_status, invoice_id))
+        
+        conn.commit()
+    conn.close()
+    return f"Recorded payment of ${payment_received}."
+
+@tool()
+def record_partial_payment(invoice_id: int, payment_received: float) -> str:
+    """
+    Records a partial payment for an invoice. If fully paid, status updates to 'Paid'.
+    """
+    data = _load_data()
+    found = False
+    
+    for inv in data['invoices']:
+        if inv['id'] == invoice_id:
+            # Initialize paid_amount if it doesn't exist yet
+            current_paid = inv.get('paid_amount', 0.0)
+            inv['paid_amount'] = current_paid + payment_received
+            
+            # If they paid it all off, flip the status
+            if inv['paid_amount'] >= inv['amount']:
+                inv['status'] = 'Paid'
+            
+            found = True
+            break
+            
+    if found:
+        _save_data(data)
+        return f"Recorded ${payment_received} for invoice #{invoice_id}."
+    return f"Error: Invoice #{invoice_id} not found."

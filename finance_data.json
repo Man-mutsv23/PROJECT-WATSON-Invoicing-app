@@ -3,18 +3,68 @@
         {
             "id": 1,
             "client": "Tapiwa",
-            "amount": 200.0,
-            "description": "Solar installation",
-            "date": "2026-01-30",
-            "status": "Pending"
+            "amount": 50.0,
+            "description": "Loan",
+            "date": "2026-02-04",
+            "status": "Paid"
         },
         {
             "id": 2,
-            "client": "AEW",
-            "amount": 400.0,
-            "description": "Graphics Designing",
-            "date": "2026-01-30",
-            "status": "Pending"
+            "client": "Tristan",
+            "amount": 100.0,
+            "description": "Personal Loan",
+            "date": "2026-02-04",
+            "status": "Paid"
+        },
+        {
+            "id": 3,
+            "client": "Alberic",
+            "amount": 200.0,
+            "description": "School Fees",
+            "date": "2026-02-04",
+            "status": "Paid"
+        },
+        {
+            "id": 4,
+            "client": "Yaqueen",
+            "amount": 150.0,
+            "description": "Car payment",
+            "date": "2026-02-04",
+            "status": "Paid"
+        },
+        {
+            "id": 5,
+            "client": "Mandla",
+            "amount": 50.0,
+            "description": "Bank loan",
+            "date": "2026-02-04",
+            "status": "Paid"
+        },
+        {
+            "id": 6,
+            "client": "Steve Harvey",
+            "amount": 950.0,
+            "description": "Full Suite",
+            "date": "2026-02-04",
+            "status": "Paid"
+        },
+        {
+            "id": 7,
+            "client": "Michael Angelo",
+            "amount": 200.0,
+            "description": "Art Supplies",
+            "date": "2026-02-04",
+            "status": "Paid",
+            "paid_amount": 200.0
+        },
+        {
+            "id": 8,
+            "client": "Isaac",
+            "amount": 50.0,
+            "description": "Perfume",
+            "date": "2026-02-04",
+            "status": "Pending",
+            "paid_amount": 30.0
         }
     ]
 }
